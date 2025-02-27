@@ -3,9 +3,12 @@ import asyncio
 import re
 from g4f.client import Client
 import pdfplumber
+from flask import Flask, request, jsonify
 
 sys.stdout.reconfigure(encoding='utf-8')
 client = Client()
+
+app = Flask(__name__)  # Tạo ứng dụng Flask
 
 def read_pdf(file_path):
     with pdfplumber.open(file_path) as pdf:
@@ -25,18 +28,28 @@ def generate_response(question, pdf_text):
         )
 
         answer = response.choices[0].message.content.strip()
-
-
         answer = re.sub(r'(\d+)\.\s', r'<li>\1. ', answer)
-        # answer = f"<ol>{answer}</ol>"
         return answer.strip()
     except Exception as e:
-        return "Đã xảy ra lỗi trong quá trình xử lý câu hỏi."
+        return f"Lỗi: {str(e)}"
 
-pdf_file_path = 'test.pdf' 
+# Đọc file PDF một lần khi khởi động server
+pdf_file_path = "test.pdf"  # Đặt file PDF trong cùng thư mục
 pdf_text = read_pdf(pdf_file_path)
 
-if __name__ == "__main__":
-    question = sys.argv[1]
+@app.route("/", methods=["GET"])
+def home():
+    return "Chatbot API đang chạy!"
+
+@app.route("/ask", methods=["POST"])
+def ask():
+    data = request.get_json()
+    question = data.get("question", "")
+    if not question:
+        return jsonify({"error": "Thiếu câu hỏi"}), 400
+
     answer = generate_response(question, pdf_text)
-    print(answer)
+    return jsonify({"answer": answer})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
