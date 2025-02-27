@@ -33,7 +33,7 @@ def generate_response(question, pdf_text):
     except Exception as e:
         return "Đã xảy ra lỗi trong quá trình xử lý câu hỏi."
 
-pdf_file_path = 'D:\\Downloads\\test.pdf' 
+pdf_file_path = 'test.pdf' 
 pdf_text = read_pdf(pdf_file_path)
 
 if __name__ == "__main__":
