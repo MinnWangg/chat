@@ -4,12 +4,12 @@ import re
 from g4f.client import Client
 import pdfplumber
 from flask import Flask, request, jsonify
-
+from flask_cors import CORS
 sys.stdout.reconfigure(encoding='utf-8')
 client = Client()
 
 app = Flask(__name__)  # Tạo ứng dụng Flask
-
+CORS(app)
 def read_pdf(file_path):
     with pdfplumber.open(file_path) as pdf:
         text = ""
