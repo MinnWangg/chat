@@ -1,0 +1,4 @@
+flask
+pdfplumber
+g4f
+gunicorn
