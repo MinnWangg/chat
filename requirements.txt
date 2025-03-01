@@ -2,3 +2,4 @@ flask
 pdfplumber
 g4f
 gunicorn
+flask_cors
