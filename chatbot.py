@@ -1,3 +1,4 @@
+from flask import Flask, request, jsonify
 import asyncio
 import json
 import sys
@@ -8,8 +9,9 @@ if sys.platform.startswith('win'):
     from asyncio import WindowsSelectorEventLoopPolicy
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-
 client = Client()
+
+app = Flask(__name__)
 
 instruction = """
 Bạn là trợ lý AI đại diện cho Trường Đại học Thủ đô Hà Nội, đóng vai trò là một **cố vấn học tập** hỗ trợ sinh viên trong suốt quá trình học tại trường.
@@ -127,32 +129,30 @@ def generate_response(question, json_data):
     except Exception as e:
         return f"Lỗi trong quá trình xử lý: {str(e)}"
 
-if __name__ == "__main__":
-    if len(sys.argv) > 1: 
-        question = sys.argv[1]  
-        data_file_path = "../python/Data1.json" 
-        data = read_json(data_file_path) 
+@app.route('/ask', methods=['GET', 'POST'])
+def ask():
+    if request.method == 'POST':
+        question = request.json.get('question')
+        if question:
+            data_file_path = "../python/Data1.json"
+            data = read_json(data_file_path)
 
-        file_dict_path = "../python/Data2_file.json"  
-        file_dict = read_json(file_dict_path)
+            file_dict_path = "../python/Data2_file.json"
+            file_dict = read_json(file_dict_path)
 
-        if "danh sách file" in question.lower() or "file liên quan" in question.lower() or "file tài liệu" in question.lower() or "tài liệu" in question.lower() or "tài liệu liên quan" in question.lower():
-            file_response = answer_with_related_files(question, file_dict)
-            if file_response:
-                sys.stdout.buffer.write(file_response.encode('utf-8'))
+            if "danh sách file" in question.lower() or "file liên quan" in question.lower() or "file tài liệu" in question.lower() or "tài liệu" in question.lower() or "tài liệu liên quan" in question.lower():
+                file_response = answer_with_related_files(question, file_dict)
+                if file_response:
+                    return jsonify({"response": file_response})
+                else:
+                    return jsonify({"response": "Không tìm thấy tài liệu nào liên quan đến câu hỏi này."})
             else:
-                sys.stdout.buffer.write("Không tìm thấy tài liệu nào liên quan đến câu hỏi này.".encode('utf-8'))
+                answer = generate_response(question, data)
+                save_chat_history(question, answer)
+                return jsonify({"response": answer})
         else:
-            answer = generate_response(question, data)
-            save_chat_history(question, answer) 
+            return jsonify({"response": "Câu hỏi không được cung cấp."})
+    return jsonify({"response": "Yêu cầu POST với câu hỏi."})
 
-            if "Tôi chưa có thông tin" in answer or len(answer) < 5:
-                sys.stdout.buffer.write("Hiện tại tôi chưa có thông tin về vấn đề này, bạn có thể cung cấp thêm thông tin về nội dung bạn quan tâm không, mình sẽ giúp bạn tìm kiếm thêm nhé.".encode('utf-8'))
-            else:
-                sys.stdout.buffer.write(answer.encode('utf-8'))  
-                file_response = answer_with_related_files(question, file_dict) 
-                if file_response: 
-                    sys.stdout.buffer.write(b"<br><br>") 
-                    sys.stdout.buffer.write(file_response.encode('utf-8'))  
-    else:
-        print("Không nhận được câu hỏi.")
+if __name__ == "__main__":
+    app.run(debug=True)
