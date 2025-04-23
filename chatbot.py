@@ -1,13 +1,12 @@
-from flask import Flask, request, jsonify
 import asyncio
 import json
-import sys
 import os
+from flask import Flask, request, jsonify
 from g4f.client import Client
 
-if sys.platform.startswith('win'):
+if os.name == "nt":
     from asyncio import WindowsSelectorEventLoopPolicy
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
 client = Client()
 
@@ -50,12 +49,11 @@ Bạn là trợ lý AI đại diện cho Trường Đại học Thủ đô Hà N
 - Giúp sinh viên **tự tin hơn khi ra quyết định học vụ**, và đồng hành cùng họ trong hành trình học tập tại Trường Đại học Thủ đô Hà Nội
 """
 
-
 def read_json(file_path):
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
 
-def save_chat_history(question, answer, file_path="../python/chat_history.json"):
+def save_chat_history(question, answer, file_path="chat_history.json"):
     try:
         history = []
         if os.path.exists(file_path):
@@ -67,40 +65,27 @@ def save_chat_history(question, answer, file_path="../python/chat_history.json")
     except Exception as e:
         print("Lỗi khi lưu lịch sử:", e)
 
-def load_chat_history(file_path="../python/chat_history.json"):
+def load_chat_history(file_path="chat_history.json"):
     if os.path.exists(file_path):
         with open(file_path, "r", encoding="utf-8") as f:
             return [(item["question"], item["answer"]) for item in json.load(f)]
     return []
 
-
 def answer_with_related_files(question, file_dict):
     for keyword in file_dict:
         if keyword.lower() in question.lower():
             file_list = file_dict[keyword]
-            html_response = "Đây là tài liệu liên quan:<br>"
+            file_links = []
             for file in file_list:
                 if isinstance(file, dict) and 'name' in file and 'path' in file:
                     file_id = file['path']
                     file_url = f'https://drive.google.com/uc?id={file_id}'
-                    html_response += f"- <a href='https://docs.google.com/gview?url={file_url}&embedded=true' target='_blank'>{file['name']}</a><br>"
-            return html_response
-        
-            #for file in file_list:
-                #if isinstance(file, dict) and 'name' in file and 'path' in file:
-                    #html_response += f"- <a href='{file['path']}' target='_blank'>{file['name']}</a><br>"
-            #return html_response
+                    file_links.append({
+                        "name": file['name'],
+                        "url": f'https://docs.google.com/gview?url={file_url}&embedded=true'
+                    })
+            return file_links
     return None
-
-# def answer_with_related_files(question, file_dict):
-#     for keyword in file_dict:
-#         if keyword in question.lower():
-#             file_list = file_dict[keyword]
-#             html_response = "Các tài liệu bạn cần đây:<br>"
-#             for file in file_list:
-#                 html_response += f"- <a href='{file['path']}' target='_blank'>{file['name']}</a><br>"
-#             return html_response
-#     return None
 
 context_history = load_chat_history()
 
@@ -119,10 +104,9 @@ def generate_response(question, json_data):
 
         answer = response.choices[0].message.content.strip()
         
-
-        # Nếu câu trả lời không rõ ràng
         if "Tôi chưa có thông tin" in answer or len(answer) < 5:
             return "Hiện tại tôi chưa có thông tin về vấn đề này, bạn có thể cung cấp thêm thông tin về nội dung bạn quan tâm không, mình sẽ giúp bạn tìm kiếm thêm nhé."
+        
         context_history.append((question, answer))
         return answer
 
@@ -131,32 +115,29 @@ def generate_response(question, json_data):
 
 @app.route('/ask', methods=['POST'])
 def ask():
-    if request.method == 'POST':
-        question = request.json.get('question')
-        if question:
-            data_file_path = "../python/Data1.json"
-            data = read_json(data_file_path)
+    data = request.json
+    question = data.get('question')
+    
+    if not question:
+        return jsonify({"error": "Không nhận được câu hỏi."}), 400
 
-            file_dict_path = "../python/Data2_file.json"
-            file_dict = read_json(file_dict_path)
+    data_file_path = "/python/Data1.json" 
+    data = read_json(data_file_path) 
 
-            if "danh sách file" in question.lower() or "file liên quan" in question.lower() or "file tài liệu" in question.lower() or "tài liệu" in question.lower() or "tài liệu liên quan" in question.lower():
-                file_response = answer_with_related_files(question, file_dict)
-                if file_response:
-                    return jsonify({"response": file_response})
-                else:
-                    return jsonify({"response": "Không tìm thấy tài liệu nào liên quan đến câu hỏi này."})
-            else:
-                answer = generate_response(question, data)
-                save_chat_history(question, answer)
-                return jsonify({"response": answer})
+    file_dict_path = "/python/Data2_file.json"  
+    file_dict = read_json(file_dict_path)
+
+    if "danh sách file" in question.lower() or "file liên quan" in question.lower():
+        file_response = answer_with_related_files(question, file_dict)
+        if file_response:
+            return jsonify({"files": file_response})
         else:
-            return jsonify({"response": "Câu hỏi không được cung cấp."})
-    return jsonify({"response": "Yêu cầu POST với câu hỏi."})
+            return jsonify({"message": "Không tìm thấy tài liệu nào liên quan đến câu hỏi này."})
 
-@app.route('/')
-def home():
-    return "Chatbot đã sẵn sàng! Vui lòng sử dụng endpoint /ask để gửi câu hỏi."
+    answer = generate_response(question, data)
+    save_chat_history(question, answer)
+
+    return jsonify({"answer": answer})
+
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=5000)
