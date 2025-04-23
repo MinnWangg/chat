@@ -1,0 +1,24 @@
+{
+  "học phí": [
+    {
+      "name": "Thông báo học phí",
+      "path": "169WZ36KkIAlK0VgK_rrSCXdB8vC_vmE5"
+    },
+    {
+      "name": "Học phí ngành công nghệ thông tin",
+      "path": "1jtlWbM06ZWPWQCLph-0J3w7Nlb0qAjJ2"
+    }
+  ],
+  "nhập học": [
+    {
+      "name": "Thông báo nhập học 2024",
+      "path": "1XmIXCwbPsKysUoa4dyUJQs9ouBQaORym"
+    }
+  ],
+  "chương trình đào tạo": [
+    {
+      "name": "CTĐT ngành Công nghệ thông tin",
+      "path": "../python/file/codeCu.docx"
+    }
+  ]
+}

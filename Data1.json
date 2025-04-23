@@ -1,0 +1,277 @@
+{
+  "instruction": "Bạn là trợ lý AI trả lời dựa trên tài liệu JSON bên dưới. Không tự tạo thông tin ngoài tài liệu. Nếu không tìm thấy thông tin, hãy trả lời: 'Hiện tại tôi chưa có thông tin về vấn đề này, bạn có thể cung cấp thêm thông tin về nội dung cụ thể hơn không? Tôi sẽ giúp bạn tìm kiếm.'",
+
+  "vai_tro": "Bạn là trợ lý AI đại diện cho Trường Đại học Thủ Đô Hà Nội. Bạn đóng vai trò cố vấn học tập, hỗ trợ sinh viên về các vấn đề học vụ, chính sách, quy trình và thông tin liên quan đến học tập tại trường.",
+
+  "danh_gia_hoc_tap": {
+    "tieu_chi": {
+      "tong_tin_chi_no": "Tổng số tín chỉ của những học phần không đạt trong một học kỳ, một năm học hoặc nợ đọng từ đầu khóa học.",
+      "tong_tin_chi_dat": "Tổng số tín chỉ của những học phần đã đạt từ đầu khóa học (tín chỉ tích lũy), bao gồm cả các học phần được miễn học hoặc công nhận tín chỉ.",
+      "diem_trung_binh": "Điểm trung bình của các học phần đã học trong một học kỳ, năm học hoặc tính từ đầu khóa học, theo điểm chính thức của học phần và trọng số tín chỉ."
+    },
+    "quy_doi_diem": {
+      "diem_chu_sang_4": {
+        "A+": 4.0,
+        "A": 4.0,
+        "B+": 3.5,
+        "B": 3.0,
+        "C+": 2.5,
+        "C": 2.0,
+        "D+": 1.5,
+        "D": 1.0,
+        "F": 0.0
+      },
+      "diem_10_sang_chu": [
+        {
+          "diem_10": "9.0 - 10.0",
+          "diem_chu": "A+"
+        },
+        {
+          "diem_10": "8.5 - 8.9",
+          "diem_chu": "A"
+        },
+        {
+          "diem_10": "8.0 - 8.4",
+          "diem_chu": "B+"
+        },
+        {
+          "diem_10": "7.0 - 7.9",
+          "diem_chu": "B"
+        },
+        {
+          "diem_10": "6.5 - 6.9",
+          "diem_chu": "C+"
+        },
+        {
+          "diem_10": "5.5 - 6.4",
+          "diem_chu": "C"
+        },
+        {
+          "diem_10": "5.0 - 5.4",
+          "diem_chu": "D+"
+        },
+        {
+          "diem_10": "4.0 - 4.9",
+          "diem_chu": "D"
+        },
+        {
+          "diem_10": "dưới 4.0",
+          "diem_chu": "F"
+        }
+      ],
+      "diem_10_sang_4": [
+        {
+          "diem_10": "8.5 - 10.0",
+          "diem_4": 4.0
+        },
+        {
+          "diem_10": "7.0 - 8.4",
+          "diem_4": "3.0 - 3.9"
+        },
+        {
+          "diem_10": "5.5 - 6.9",
+          "diem_4": "2.0 - 2.9"
+        },
+        {
+          "diem_10": "4.0 - 5.4",
+          "diem_4": "1.0 - 1.9"
+        },
+        {
+          "diem_10": "dưới 4.0",
+          "diem_4": 0.0
+        }
+      ],
+      "diem_4_sang_10": [
+        {
+          "diem_4": "3.6 - 4.0",
+          "diem_10": "9.0 - 10"
+        },
+        {
+          "diem_4": "3.2 - <3.6",
+          "diem_10": "8.0 - 8.9"
+        },
+        {
+          "diem_4": "2.5 - <3.2",
+          "diem_10": "7.0 - 7.9"
+        },
+        {
+          "diem_4": "2.0 - <2.5",
+          "diem_10": "5.0 - 6.9"
+        },
+        {
+          "diem_4": "<2.0",
+          "diem_10": "<5.0"
+        }
+      ]
+    },
+    "xep_loai_hoc_luc": {
+  	"thang_diem_4": {
+   		 "Từ 3.6 đến 4.0": "Xuất sắc",
+    		"Từ 3.2 đến dưới 3.6": "Giỏi",
+    		"Từ 2.5 đến dưới 3.2": "Khá",
+    		"Từ 2.0 đến dưới 2.5": "Trung bình",
+    		"Từ 1.0 đến dưới 2.0": "Yếu",
+    		"Dưới 1.0": "Kém"
+  	}
+    },
+    "xep_trinh_do_nam_hoc": {
+      "nam_1": "N < M",
+      "nam_2": "M ≤ N < 2M",
+      "nam_3": "2M ≤ N < 3M",
+      "nam_4": "3M ≤ N < 4M",
+      "nam_5": "4M ≤ N < 5M"
+    },
+    "xet_tien_do": "Các đơn vị đào tạo tổ chức xét tiến độ cho sinh viên và gửi kết quả xét tiến độ về phòng QLĐT&CTHSSV chậm nhất 04 tuần sau khi kết thúc kỳ thi kết thúc học phần.",
+    "canh_bao_hoc_tap": {
+      "canh_bao_muc_1": "Điểm trung bình tích lũy từ 1.0 đến dưới 2.0.",
+      "canh_bao_muc_2": "Điểm trung bình tích lũy từ 0.8 đến dưới 1.0.",
+      "buoc_thoi_hoc": "Điểm trung bình tích lũy dưới 0.8 có thể bị buộc thôi học theo quy định."
+    },
+    "tot_nghiep": {
+      "tong_tin_chi": "Hoàn thành đủ số tín chỉ chương trình đào tạo (thường 120-150 tín chỉ).",
+      "diem_tich_luy": "Đạt từ 2.0 trở lên theo thang điểm 4.",
+      "chung_chi_ngoai_ngu": "Đạt chuẩn đầu ra ngoại ngữ (B1 hoặc TOEIC ≥ 500).",
+      "chung_chi_tin_hoc": "Một số ngành yêu cầu chuẩn đầu ra về tin học (MOS, ICDL...).",
+      "khong_no_mon": "Không còn học phần nào chưa đạt (F) hoặc bị cấm thi."
+    },
+    "thoi_gian_dang_ky_hoc_phan": "Diễn ra vào cuối học kỳ trước. Sinh viên kiểm tra lịch cụ thể từ Phòng QLĐT&CTHSSV hoặc cổng thông tin sinh viên."
+  },
+
+  "chinh_sach_khac": {
+    "hoc_phi": {
+      "dong_hoc_phi": "Sinh viên cần hoàn thành học phí theo thời hạn thông báo từ Phòng Tài chính – Kế toán.",
+      "cham_dong_hoc_phi": "Nếu chậm nộp học phí, sinh viên có thể bị khóa tài khoản học tập hoặc không được đăng ký học phần.",
+      "mien_giam": "Một số đối tượng được xét miễn/giảm học phí theo quy định (con thương binh, hộ nghèo...)."
+    },
+    "hoc_bong": {
+      "hoc_bong_khuyen_khich": "Căn cứ vào kết quả học tập và rèn luyện. Sinh viên cần đạt từ loại Khá trở lên.",
+      "hoc_bong_chinh_sach": "Dành cho các đối tượng chính sách, hộ nghèo, dân tộc thiểu số... theo quy định.",
+      "thu_tuc": "Nộp đơn xét học bổng theo hướng dẫn từ phòng CTCT&HSSV vào đầu mỗi học kỳ hoặc năm học."
+    },
+    "chuyen_nganh": {
+      "dieu_kien": "Hoàn thành ít nhất 1 học kỳ, có nguyện vọng chính đáng và điểm trung bình học tập không dưới mức quy định.",
+      "quy_trinh": "Liên hệ Phòng QLĐT&CTHSSV để nộp đơn, có xác nhận của cố vấn học tập và khoa.",
+      "thoi_gian": "Thường diễn ra vào đầu năm học hoặc sau năm nhất."
+    },
+    "nghi_hoc_tam_thoi": {
+      "dieu_kien": "Có lý do chính đáng như ốm đau, hoàn cảnh khó khăn, công việc... và không bị cảnh báo học tập.",
+      "quy_trinh": "Nộp đơn xin nghỉ có xác nhận của gia đình/khoa và được nhà trường phê duyệt.",
+      "thoi_gian_toi_da": "Tối đa 2 năm trong suốt thời gian học tại trường."
+    }
+  },
+
+  "chuong_trinh_dao_tao": {
+    "khoi_nganh": {
+      "KN I": "Khoa học giáo dục và đào tạo giáo viên",
+      "KN III": "Kinh doanh và quản lý, pháp luật",
+      "KN IV": "Khoa học sự sống, khoa học tự nhiên",
+      "KN V": "Toán, thống kê, CNTT, kỹ thuật, công nghệ, sản xuất và chế biến",
+      "KN VII": "Nhân văn, xã hội, du lịch, dịch vụ vận tải, bảo vệ môi trường"
+    },
+    "hoc_phi": {
+      "2023-2024": {
+        "KN I": 435000,
+        "KN III": 435000,
+        "KN IV": 470000,
+        "KN V": 505000,
+        "KN VII": 460000
+      },
+      "2024-2025": {
+        "KN I": 490000,
+        "KN III": 490000,
+        "KN IV": 525000,
+        "KN V": 570000,
+        "KN VII": 520000
+      },
+      "2025-2026": {
+        "KN I": 550000,
+        "KN III": 550000,
+        "KN IV": 595000,
+        "KN V": 645000,
+        "KN VII": 590000
+      }
+    },
+    "so_tin_chi_tot_nghiep": {
+      "chuong_trinh_4_nam": 120,
+      "chuong_trinh_5_nam": 150,
+      "chuong_trinh_6_nam": 180
+    },
+    "quy_doi_thoi_gian_tin_chi": {
+      "1_tin_chi_ly_thuyet": "15 giờ học + 30 giờ tự học có hướng dẫn",
+      "1_tin_chi_thuc_hanh": "30 giờ thực hành + 15 giờ tự học",
+      "1_tin_chi_thuc_tap": "45 giờ thực tập tại cơ sở"
+    }
+  }, 
+  "chuan_dau_ra_ngoai_ngu": {
+    "nganh_ngoai_ngu": {
+      "yeu_cau": "Bậc 5 theo khung 6 bậc Việt Nam với ngôn ngữ chính; bậc 3 với ngoại ngữ khác",
+      "duoc_cong_nhan": [
+        "Bằng tốt nghiệp ngành ngoại ngữ",
+        "Chứng chỉ quốc tế tương đương bậc 5",
+        "Bằng cấp học bằng ngoại ngữ"
+      ]
+    },
+    "nganh_khac": {
+      "yeu_cau": "Bậc 3 theo khung 6 bậc Việt Nam (thường là tiếng Anh)",
+      "mien_danh_gia": [
+        "Có bằng tốt nghiệp chương trình học bằng tiếng nước ngoài",
+        "Có chứng chỉ ngoại ngữ tương đương Bậc 3"
+      ]
+    },
+    "danh_gia": {
+      "hinh_thuc": "Thi đánh giá năng lực tại đơn vị được công nhận hoặc Trung tâm Khảo thí của Trường",
+      "dang_ky": "Sinh viên đăng ký trực tiếp tại Trung tâm Khảo thí và Ngoại ngữ - Tin học"
+    }
+  },
+
+  "goi_y_mo_rong": {
+    "cau_hoi_thuong_gap": [
+      {
+        "hoi": "Làm sao để được xếp loại Giỏi?",
+        "tra_loi": "Bạn cần đạt điểm trung bình từ 3.2 đến dưới 3.6 theo thang điểm 4."
+      },
+      {
+        "hoi": "Em bị nợ 10 tín chỉ thì đang ở năm mấy?",
+        "tra_loi": "Cần biết tổng số tín chỉ tích lũy (N). Nếu N < M, bạn đang ở năm 1. Nếu M ≤ N < 2M thì là năm 2."
+      },
+      {
+        "hoi": "Làm thế nào để tránh bị cảnh báo học tập?",
+        "tra_loi": "Giữ điểm trung bình trên 2.0 và học lại các môn điểm thấp càng sớm càng tốt."
+      },
+      {
+        "hoi": "Em cần bao nhiêu tín chỉ để tốt nghiệp?",
+        "tra_loi": "Khoảng 120–150 tín chỉ tùy theo chương trình đào tạo ngành học."
+      },
+      {
+        "hoi": "Lịch đăng ký học phần ở đâu?",
+        "tra_loi": "Bạn xem trên cổng thông tin sinh viên hoặc liên hệ Phòng QLĐT&CTHSSV."
+      },
+      {
+        "hoi": "Thế nào là điểm F?",
+        "tra_loi": "Là điểm không đạt (dưới 1.0 theo thang điểm 4). Phải học lại để được tính tích lũy."
+      },
+      {
+        "hoi": "Em muốn chuyển ngành thì làm thế nào?",
+        "tra_loi": "Bạn cần hoàn thành ít nhất 1 học kỳ, làm đơn và được khoa và phòng QLĐT&CTHSSV phê duyệt."
+      },
+      {
+        "hoi": "Có thể nghỉ học tạm thời không?",
+        "tra_loi": "Được, nếu có lý do chính đáng và không bị cảnh báo học tập. Tối đa nghỉ 2 năm toàn khóa."
+      },
+      {
+        "hoi": "Học bổng được xét như thế nào?",
+        "tra_loi": "Dựa trên kết quả học tập và rèn luyện, thông thường xét vào đầu học kỳ hoặc năm học."
+      }
+    ],
+    "thuat_ngu": {
+      "M": "Số tín chỉ tối thiểu cần tích lũy trong 1 năm học.",
+      "N": "Tổng số tín chỉ đã tích lũy từ đầu khóa.",
+      "QLĐT&CTHSSV": "Phòng Quản lý Đào tạo và Công tác Học sinh, Sinh viên.",
+      "CTCT&HSSV": "Phòng Công tác Chính trị và Học sinh, Sinh viên.",
+      "F": "Điểm không đạt, tương đương với điểm 0.0 trên thang điểm 4.",
+      "tich_luy": "Số tín chỉ hoặc điểm số đã được công nhận hoàn thành từ đầu khóa.",
+      "canh_bao_hoc_tap": "Trạng thái học tập bị hạn chế do kết quả yếu, có thể dẫn đến buộc thôi học.",
+      "tạm nghỉ": "Khoảng thời gian sinh viên được cho phép dừng việc học có lý do chính đáng."
+    }
+  }
+}
