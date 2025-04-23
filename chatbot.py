@@ -54,7 +54,7 @@ def read_json(file_path):
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
 
-def save_chat_history(question, answer, file_path="chat_history.json"):
+def save_chat_history(question, answer, file_path="../python/chat_history.json"):
     try:
         history = []
         if os.path.exists(file_path):
@@ -66,7 +66,7 @@ def save_chat_history(question, answer, file_path="chat_history.json"):
     except Exception as e:
         print("Lỗi khi lưu lịch sử:", e)
 
-def load_chat_history(file_path="chat_history.json"):
+def load_chat_history(file_path="../python/chat_history.json"):
     if os.path.exists(file_path):
         with open(file_path, "r", encoding="utf-8") as f:
             return [(item["question"], item["answer"]) for item in json.load(f)]
