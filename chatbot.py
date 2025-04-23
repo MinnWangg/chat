@@ -53,7 +53,7 @@ def read_json(file_path):
     with open(file_path, "r", encoding="utf-8") as file:
         return json.load(file)
 
-def save_chat_history(question, answer, file_path="chat_history.json"):
+def save_chat_history(question, answer, file_path="../python/chat_history.json"):
     try:
         history = []
         if os.path.exists(file_path):
@@ -65,7 +65,7 @@ def save_chat_history(question, answer, file_path="chat_history.json"):
     except Exception as e:
         print("Lỗi khi lưu lịch sử:", e)
 
-def load_chat_history(file_path="chat_history.json"):
+def load_chat_history(file_path="../python/chat_history.json"):
     if os.path.exists(file_path):
         with open(file_path, "r", encoding="utf-8") as f:
             return [(item["question"], item["answer"]) for item in json.load(f)]
@@ -121,10 +121,10 @@ def ask():
     if not question:
         return jsonify({"error": "Không nhận được câu hỏi."}), 400
 
-    data_file_path = "/python/Data1.json" 
+    data_file_path = "../python/Data1.json" 
     data = read_json(data_file_path) 
 
-    file_dict_path = "/python/Data2_file.json"  
+    file_dict_path = "../python/Data2_file.json"  
     file_dict = read_json(file_dict_path)
 
     if "danh sách file" in question.lower() or "file liên quan" in question.lower():
