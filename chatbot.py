@@ -2,10 +2,10 @@ import asyncio
 import json
 import sys
 import os
-from asyncio import WindowsSelectorEventLoopPolicy
 from g4f.client import Client
 
 if sys.platform.startswith('win'):
+    from asyncio import WindowsSelectorEventLoopPolicy
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 
@@ -130,10 +130,10 @@ def generate_response(question, json_data):
 if __name__ == "__main__":
     if len(sys.argv) > 1: 
         question = sys.argv[1]  
-        data_file_path = "Data1.json" 
+        data_file_path = "../python/Data1.json" 
         data = read_json(data_file_path) 
 
-        file_dict_path = "Data2_file.json"  
+        file_dict_path = "../python/Data2_file.json"  
         file_dict = read_json(file_dict_path)
 
         if "danh sách file" in question.lower() or "file liên quan" in question.lower() or "file tài liệu" in question.lower() or "tài liệu" in question.lower() or "tài liệu liên quan" in question.lower():
