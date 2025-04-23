@@ -121,10 +121,10 @@ def ask():
     if not question:
         return jsonify({"error": "Không nhận được câu hỏi."}), 400
 
-    data_file_path = "../python/Data1.json" 
+    data_file_path = "Data1.json" 
     data = read_json(data_file_path) 
 
-    file_dict_path = "../python/Data2_file.json"  
+    file_dict_path = "Data2_file.json"  
     file_dict = read_json(file_dict_path)
 
     if "danh sách file" in question.lower() or "file liên quan" in question.lower():
