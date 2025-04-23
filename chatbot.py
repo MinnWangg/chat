@@ -5,7 +5,9 @@ import os
 from asyncio import WindowsSelectorEventLoopPolicy
 from g4f.client import Client
 
-asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
+if os.name == "nt":
+    from asyncio import WindowsSelectorEventLoopPolicy
+    asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
 
 client = Client()
