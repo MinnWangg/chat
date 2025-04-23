@@ -154,6 +154,9 @@ def ask():
             return jsonify({"response": "Câu hỏi không được cung cấp."})
     return jsonify({"response": "Yêu cầu POST với câu hỏi."})
 
+@app.route('/')
+def home():
+    return "Chatbot đã sẵn sàng! Vui lòng sử dụng endpoint /ask để gửi câu hỏi."
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
