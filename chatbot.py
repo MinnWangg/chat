@@ -68,7 +68,7 @@ def generate_response(question, pdf_text):
 # Giao diện web
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return "API trợ lý công dân số đang chạy.", 200
 
 # API trả lời câu hỏi
 @app.route("/ask", methods=["POST"])
