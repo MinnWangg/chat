@@ -138,7 +138,7 @@ def ask():
     if not question:
         return jsonify({"error": "Không nhận được câu hỏi."}), 400
 
-    pdf_file_path = "D1.pdf"
+    pdf_file_path = "DOL.pdf"
     pdf_text = read_pdf(pdf_file_path)
 
     file_dict_path = "Data2_file.json"  
