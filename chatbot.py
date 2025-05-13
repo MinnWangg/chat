@@ -144,15 +144,15 @@ def ask():
     file_dict_path = "Data2_file.json"  
     file_dict = read_json(file_dict_path)
 
-    if any(kw in question.lower() for kw in ["link", "file bài giảng", "bài giảng liên quan", "bài giảng"]):
+    if any(kw in question.lower() for kw in ["link liên quan", "link bài giảng", "bài giảng liên quan", "bài giảng", "bài tập", "bài tập liên quan", "link bài tập"]):
         file_response = answer_with_related_files(question, file_dict)
         if file_response:
             html_links = "<br>".join(
                 [f'📘 <a href="{f["url"]}" target="_blank">{f["name"]}</a>' for f in file_response]
             )
-            return jsonify({"answer": f"Dưới đây là các bài giảng liên quan:\n{html_links}"})
+            return jsonify({"answer": f"Dưới đây là các link liên quan:\n{html_links}"})
         else:
-            return jsonify({"answer": "Không tìm thấy bài giảng nào phù hợp với câu hỏi của bạn."})
+            return jsonify({"answer": "Không tìm thấy link nào phù hợp với câu hỏi của bạn."})
 
     answer = generate_response(question, pdf_text)
     save_chat_history(question, answer)
