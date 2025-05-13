@@ -92,14 +92,13 @@ def answer_with_related_files(question, file_dict):
             file_links = []
             for file in file_list:
                 if isinstance(file, dict) and 'name' in file and 'path' in file:
-                    file_id = file['path']
-                    file_url = f'https://drive.google.com/uc?id={file_id}'
                     file_links.append({
                         "name": file['name'],
-                        "url": f'https://docs.google.com/gview?url={file_url}&embedded=true'
+                        "url": file['path'] 
                     })
             return file_links
     return None
+
 
 context_history = load_chat_history()
 
@@ -145,20 +144,20 @@ def ask():
     file_dict_path = "Data2_file.json"  
     file_dict = read_json(file_dict_path)
 
-    if "link" in question.lower() or "link liên quan" in question.lower() or "file bài giảng" in question.lower() or "bài giảng" in question.lower() or "bài giảng liên quan" in question.lower():
+    if any(kw in question.lower() for kw in ["link", "file bài giảng", "bài giảng liên quan", "bài giảng"]):
         file_response = answer_with_related_files(question, file_dict)
         if file_response:
-            sys.stdout.buffer.write(file_response.encode('utf-8'))
+            html_links = "<br>".join(
+                [f'📘 <a href="{f["url"]}" target="_blank">{f["name"]}</a>' for f in file_response]
+            )
+            return jsonify({"answer": f"Dưới đây là các bài giảng liên quan:\n{html_links}"})
         else:
-            sys.stdout.buffer.write("Không tìm thấy tài liệu nào liên quan đến câu hỏi này.".encode('utf-8'))
-    else:
-        answer = generate_response(question, pdf_text)
-        save_chat_history(question, answer)
+            return jsonify({"answer": "Không tìm thấy bài giảng nào phù hợp với câu hỏi của bạn."})
 
-    # answer = generate_response(question, data)
-    # save_chat_history(question, answer)
-
+    answer = generate_response(question, pdf_text)
+    save_chat_history(question, answer)
     return jsonify({"answer": answer})
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
