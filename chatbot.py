@@ -127,6 +127,10 @@ def generate_response(question, json_data):
     except Exception as e:
         return f"Lỗi trong quá trình xử lý: {str(e)}"
 
+@app.route("/")
+def index():
+    return "API trợ lý công dân số đang chạy.", 200
+
 @app.route('/ask', methods=['POST'])
 def ask():
     data = request.json
