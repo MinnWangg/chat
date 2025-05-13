@@ -1,44 +1,61 @@
-# app.py
 import asyncio
-import platform
+import json
 import os
-from flask import Flask, request, jsonify, render_template
-from g4f.client import Client
+import sys
+import platform
 import pdfplumber
+from flask import Flask, request, jsonify
+from g4f.client import Client
 
-# Chỉ dùng WindowsSelectorEventLoopPolicy trên Windows
-if platform.system() == "Windows":
+if os.name == "nt":
     from asyncio import WindowsSelectorEventLoopPolicy
     asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())
 
 client = Client()
+
 app = Flask(__name__)
 
 instruction = """
-Bạn là trợ lý AI hỗ trợ sinh viên Trường Đại học Thủ đô Hà Nội nâng cao **kỹ năng công dân số** – bao gồm hiểu biết, hành vi và kỹ năng khi sử dụng công nghệ, mạng xã hội, và Internet một cách an toàn, có trách nhiệm, và hiệu quả.
+Bạn là trợ lý AI đại diện cho Trường Đại học Thủ đô Hà Nội, đóng vai trò là một **cố vấn học tập** hỗ trợ sinh viên trong suốt quá trình học tại trường.
 
 # 1. Vai trò chính:
-- Cung cấp kiến thức về:
-  - Quyền và nghĩa vụ của công dân số
-  - Bảo mật thông tin cá nhân, phòng tránh lừa đảo trực tuyến
-  - Ứng xử văn minh trên mạng xã hội
-  - Sử dụng công nghệ để học tập, làm việc hiệu quả
-- Hướng dẫn kỹ năng tra cứu thông tin đáng tin cậy, nhận diện tin giả
-- Không bịa đặt hoặc suy đoán thông tin nếu không có trong dữ liệu
-- Nếu không có dữ liệu phù hợp, hãy trả lời:
-  > "Hiện tại mình chưa có thông tin về nội dung này, bạn có thể cung cấp thêm chi tiết không?"
+- Cung cấp thông tin **chính xác**, **dễ hiểu** và **đáng tin cậy** về:
+  - Quy chế học tập, chương trình đào tạo, tín chỉ, học phí
+  - Chuẩn đầu ra, học bổng, chuyển ngành, nghỉ học tạm thời
+  - Các quy trình học vụ khác theo dữ liệu đã có
+- **Tuyệt đối không tự tạo thông tin** nếu nội dung không có trong cơ sở dữ liệu.
+- Nếu không có thông tin phù hợp, hãy trả lời:
+  > "Hiện tại mình chưa có thông tin về vấn đề này, bạn có thể cung cấp thêm chi tiết không? Mình sẽ giúp bạn tìm hiểu."
 
 # 2. Phong cách giao tiếp:
 - Giọng điệu: **Thân thiện**, **chuyên nghiệp**, **ngắn gọn**, **dễ hiểu**
-- Xưng hô: gọi người dùng là "bạn", xưng là "mình" hoặc "trợ lý công dân số"
-- Tránh dùng thuật ngữ chuyên môn trừ khi cần thiết (và phải giải thích rõ)
+- Xưng hô: Gọi người dùng là "**bạn**", xưng là "**mình**" hoặc "**trợ lý học tập**"
+- Tránh dùng thuật ngữ chuyên môn trừ khi thực sự cần thiết; nếu bắt buộc dùng, nên có giải thích đơn giản
 
-# 3. Mục tiêu:
-- Giúp sinh viên hiểu đúng về hành vi số, có trách nhiệm khi sử dụng Internet
-- Hỗ trợ sinh viên xây dựng năng lực số toàn diện trong học tập và cuộc sống
+# 3. Nguyên tắc xử lý câu hỏi:
+- Nếu câu hỏi **rõ ràng** và **có trong dữ liệu** → Trả lời chính xác theo nội dung cung cấp
+- Nếu hỏi về **xếp loại học lực theo điểm**, cần:
+  - Phân tích chính xác theo từng mức điểm
+  - Ví dụ: "Từ 3.2 đến dưới 3.6" nghĩa là **3.17 vẫn thuộc loại "Khá"**, không phải "Giỏi"
+- Nếu hỏi về **quy đổi điểm số**, dùng đúng bảng quy đổi tương ứng đã có:
+  - `diem_chu_sang_4`: Điểm chữ (A, B+,...) sang hệ 4
+  - `diem_10_sang_chu`: Điểm 10 sang điểm chữ
+  - `diem_10_sang_4`: Điểm 10 sang hệ 4
+  - `diem_4_sang_10`: Hệ 4 sang điểm 10
+- Nếu điểm được hỏi là **số lẻ** (ví dụ: 3.17) → So sánh chính xác theo khoảng điểm để xác định xếp loại hoặc điểm tương đương
+- Nếu câu hỏi **chưa rõ nghĩa** → Hỏi lại để làm rõ:
+  > "Bạn có thể nói rõ hơn về học phần hoặc quy trình mà bạn đang đề cập không?"
+- Nếu câu hỏi **không liên quan hoặc vượt ngoài phạm vi hỗ trợ** → Gợi ý liên hệ **Phòng QLĐT & Công tác HSSV** để được giải đáp chính thức
 
+# 4. Mục tiêu của bạn:
+- Hỗ trợ sinh viên **hiểu rõ quyền lợi, nghĩa vụ và thông tin học tập** tại trường
+- Giúp sinh viên **tự tin hơn khi ra quyết định học vụ**, và đồng hành cùng họ trong hành trình học tập tại Trường Đại học Thủ đô Hà Nội
 """
-# Đọc PDF 1 lần duy nhất khi khởi động server
+
+def read_json(file_path):
+    with open(file_path, "r", encoding="utf-8") as file:
+        return json.load(file)
+
 def read_pdf(file_path):
     try:
         with pdfplumber.open(file_path) as pdf:
@@ -49,35 +66,95 @@ def read_pdf(file_path):
     except Exception as e:
         return f"Lỗi khi đọc file PDF: {str(e)}"
 
-pdf_file_path = "D1.pdf"
-pdf_text = read_pdf(pdf_file_path)
 
-# Hàm xử lý câu hỏi
-def generate_response(question, pdf_text):
+def save_chat_history(question, answer, file_path="chat_history.json"):
     try:
-        context = pdf_text[:6000] if len(pdf_text) > 6000 else pdf_text
-        prompt = f"Đây là một đoạn văn từ tài liệu: {context}\n\nCâu hỏi: {question}\nTrả lời:"
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",  
-            messages=[{"role": "user", "content": prompt}],
-        )
-        return response.choices[0].message.content
+        history = []
+        if os.path.exists(file_path):
+            with open(file_path, "r", encoding="utf-8") as f:
+                history = json.load(f)
+        history.append({"question": question, "answer": answer})
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(history, f, ensure_ascii=False, indent=2)
     except Exception as e:
-        return f"❌ Đã xảy ra lỗi khi tạo phản hồi: {str(e)}"
+        print("Lỗi khi lưu lịch sử:", e)
 
-# Giao diện web
-@app.route("/")
-def index():
-    return "API trợ lý công dân số đang chạy.", 200
+def load_chat_history(file_path="chat_history.json"):
+    if os.path.exists(file_path):
+        with open(file_path, "r", encoding="utf-8") as f:
+            return [(item["question"], item["answer"]) for item in json.load(f)]
+    return []
 
-# API trả lời câu hỏi
-@app.route("/ask", methods=["POST"])
+def answer_with_related_files(question, file_dict):
+    for keyword in file_dict:
+        if keyword.lower() in question.lower():
+            file_list = file_dict[keyword]
+            file_links = []
+            for file in file_list:
+                if isinstance(file, dict) and 'name' in file and 'path' in file:
+                    file_id = file['path']
+                    file_url = f'https://drive.google.com/uc?id={file_id}'
+                    file_links.append({
+                        "name": file['name'],
+                        "url": f'https://docs.google.com/gview?url={file_url}&embedded=true'
+                    })
+            return file_links
+    return None
+
+context_history = load_chat_history()
+
+def generate_response(question, json_data):
+    try:
+        context = json.dumps(json_data, ensure_ascii=False, indent=2)
+        context_prompt = "\n".join([f"Câu hỏi: {q}\nTrả lời: {a}" for q, a in context_history])
+
+        prompt = f"{instruction}\n\nDữ liệu từ hệ thống:\n{context}\n\n{context_prompt}\n\nCâu hỏi: {question}\nTrả lời:"
+
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3
+        )
+
+        answer = response.choices[0].message.content.strip()
+        
+        if "Tôi chưa có thông tin" in answer or len(answer) < 5:
+            return "Hiện tại tôi chưa có thông tin về vấn đề này, bạn có thể cung cấp thêm thông tin về nội dung bạn quan tâm không, mình sẽ giúp bạn tìm kiếm thêm nhé."
+        
+        context_history.append((question, answer))
+        return answer
+
+    except Exception as e:
+        return f"Lỗi trong quá trình xử lý: {str(e)}"
+
+@app.route('/ask', methods=['POST'])
 def ask():
-    data = request.get_json()
-    question = data.get("question", "")
-    answer = generate_response(question, pdf_text)
+    data = request.json
+    question = data.get('question')
+    
+    if not question:
+        return jsonify({"error": "Không nhận được câu hỏi."}), 400
+
+    pdf_file_path = "D1.pdf"
+    pdf_text = read_pdf(pdf_file_path)
+
+    file_dict_path = "Data2_file.json"  
+    file_dict = read_json(file_dict_path)
+
+    if "link" in question.lower() or "link liên quan" in question.lower() or "file bài giảng" in question.lower() or "bài giảng" in question.lower() or "bài giảng liên quan" in question.lower():
+        file_response = answer_with_related_files(question, file_dict)
+        if file_response:
+            sys.stdout.buffer.write(file_response.encode('utf-8'))
+        else:
+            sys.stdout.buffer.write("Không tìm thấy tài liệu nào liên quan đến câu hỏi này.".encode('utf-8'))
+    else:
+        answer = generate_response(question, pdf_text)
+        save_chat_history(question, answer)
+
+    # answer = generate_response(question, data)
+    # save_chat_history(question, answer)
+
     return jsonify({"answer": answer})
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5500))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host='0.0.0.0', port=5000)
