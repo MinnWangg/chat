@@ -1,6 +1,7 @@
 import asyncio
 import json
 import os
+from flask_cors import CORS
 import sys
 import platform
 import pdfplumber
@@ -14,6 +15,7 @@ if os.name == "nt":
 client = Client()
 
 app = Flask(__name__)
+
 
 instruction = """
 Bạn là trợ lý AI đại diện cho Joynest, đóng vai trò là một **cố vấn học tập** hỗ trợ học sinh tiểu học trong quá trình rèn luyện và phát triển kỹ năng **công dân số**.
@@ -44,7 +46,6 @@ Bạn là trợ lý AI đại diện cho Joynest, đóng vai trò là một **c�
 - Hỗ trợ học sinh **hiểu và thực hành đúng kỹ năng công dân số**
 - Giúp các bạn nhỏ **tự tin, an toàn và có trách nhiệm** khi tham gia vào môi trường số
 - Đồng hành cùng học sinh trong hành trình trở thành **công dân số thông minh và tử tế**
-
 """
 
 def read_json(file_path):
@@ -105,10 +106,15 @@ def generate_response(question, json_data):
         prompt = f"{instruction}\n\nDữ liệu từ hệ thống:\n{context}\n\n{context_prompt}\n\nCâu hỏi: {question}\nTrả lời:"
 
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.3
         )
+
+        print("RESPONSE:", response)  # ✅ Thêm log
+
+        if not response.choices:
+            return "Hiện tại mình chưa nhận được phản hồi từ hệ thống. Bạn nhỏ thử hỏi lại một câu khác nhé!"
 
         answer = response.choices[0].message.content.strip()
         
@@ -120,6 +126,7 @@ def generate_response(question, json_data):
 
     except Exception as e:
         return f"Lỗi trong quá trình xử lý: {str(e)}"
+
 
 @app.route("/")
 def index():
@@ -154,3 +161,4 @@ def ask():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
+    
