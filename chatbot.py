@@ -102,7 +102,8 @@ def generate_response(question, json_data):
     try:
         context = json.dumps(json_data, ensure_ascii=False, indent=2)
         context_prompt = "\n".join([f"Câu hỏi: {q}\nTrả lời: {a}" for q, a in context_history])
-
+        if not context_history:
+            context_prompt = ""
         prompt = f"{instruction}\n\nDữ liệu từ hệ thống:\n{context}\n\n{context_prompt}\n\nCâu hỏi: {question}\nTrả lời:"
 
         response = client.chat.completions.create(
