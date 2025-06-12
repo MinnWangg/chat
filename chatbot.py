@@ -106,7 +106,8 @@ def generate_response(question, json_data):
         prompt = f"{instruction}\n\nDữ liệu từ hệ thống:\n{context}\n\n{context_prompt}\n\nCâu hỏi: {question}\nTrả lời:"
 
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            # model="gpt-3.5-turbo",
+            model="gpt-4o-mini", 
             messages=[{"role": "user", "content": prompt}],
             temperature=0.3
         )
