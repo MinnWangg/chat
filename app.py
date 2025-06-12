@@ -87,19 +87,19 @@ file_dict_path = "Data2_file.json"
 file_dict = read_json(file_dict_path)
 
 # Hàm xử lý câu hỏi
-def generate_response(question, pdf_text, file_dict):
+async def generate_response_async(question, pdf_text, file_dict):
     try:
         context = pdf_text[:6000] if len(pdf_text) > 6000 else pdf_text
         prompt = f"{instruction}\n\nDữ liệu tài liệu:\n{context}\n\nCâu hỏi: {question}\nTrả lời:"
-        
-        response = client.chat.completions.create(
+
+        response = await client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
         )
-        
+
         answer = response.choices[0].message.content.strip()
         answer = convert_markdown_links_to_html(answer)
-        
+
         # Thêm link tài liệu nếu có
         file_response = answer_with_related_files(question, file_dict)
         if file_response:
@@ -109,17 +109,10 @@ def generate_response(question, pdf_text, file_dict):
             related_links_html = f'<br><br>📎 <strong>Dưới đây là tài liệu liên quan bạn có thể tham khảo:</strong><ul>{html_links}</ul>'
             answer += related_links_html
 
-
-
         return answer
 
     except Exception as e:
         return f"❌ Đã xảy ra lỗi khi tạo phản hồi: {str(e)}"
-
-# Giao diện chính
-@app.route("/")
-def index():
-    return "API trợ lý công dân số đang chạy.", 200
 
 # API hỏi đáp
 @app.route("/ask", methods=["POST"])
@@ -129,9 +122,19 @@ def ask():
     if not question:
         return jsonify({"error": "Bạn chưa gửi câu hỏi."}), 400
 
-    answer = generate_response(question, pdf_text, file_dict)
-    return jsonify({"answer": answer})
+    # Gọi hàm async một cách an toàn
+    try:
+        answer = asyncio.run(generate_response_async(question, pdf_text, file_dict))
+        return jsonify({"answer": answer})
+    except Exception as e:
+        return jsonify({"error": f"❌ Đã xảy ra lỗi: {str(e)}"}), 500
 
+# Giao diện chính
+@app.route("/")
+def index():
+    return "API trợ lý công dân số đang chạy.", 200
+
+# ... giữ nguyên phần cuối ...
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5500))
     app.run(host="0.0.0.0", port=port)
