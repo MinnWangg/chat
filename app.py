@@ -2,6 +2,7 @@ import asyncio
 import platform
 import os
 import json
+import re
 from flask import Flask, request, jsonify
 from g4f.client import Client
 import pdfplumber
@@ -75,6 +76,8 @@ def answer_with_related_files(question, file_dict):
                     })
             return file_links
     return None
+def convert_markdown_links_to_html(text):
+    return re.sub(r'\[([^\]]+)\]\((https?://[^\)]+)\)', r'<a href="\2" target="_blank">\1</a>', text)
 
 # Đọc tài liệu 1 lần khi khởi động
 pdf_file_path = "D1.pdf"
@@ -95,6 +98,7 @@ def generate_response(question, pdf_text, file_dict):
         )
         
         answer = response.choices[0].message.content.strip()
+        answer = convert_markdown_links_to_html(answer)
         
         # Thêm link tài liệu nếu có
         file_response = answer_with_related_files(question, file_dict)
