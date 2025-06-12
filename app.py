@@ -106,7 +106,9 @@ def generate_response(question, pdf_text, file_dict):
             html_links = "".join(
                 [f'<li>📘 <a href="{f["url"]}" target="_blank"><strong>{f["name"]}</strong></a></li>' for f in file_response]
             )
-            answer += f"\n\n📎 Dưới đây là tài liệu liên quan bạn có thể tham khảo:<ul>{html_links}</ul>"
+            related_links_html = f'<br><br>📎 <strong>Dưới đây là tài liệu liên quan bạn có thể tham khảo:</strong><ul>{html_links}</ul>'
+            answer += related_links_html
+
 
 
         return answer
