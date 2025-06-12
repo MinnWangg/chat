@@ -87,12 +87,13 @@ file_dict_path = "Data2_file.json"
 file_dict = read_json(file_dict_path)
 
 # Hàm xử lý câu hỏi
-async def generate_response_async(question, pdf_text, file_dict):
+def generate_response(question, pdf_text, file_dict):
     try:
         context = pdf_text[:6000] if len(pdf_text) > 6000 else pdf_text
         prompt = f"{instruction}\n\nDữ liệu tài liệu:\n{context}\n\nCâu hỏi: {question}\nTrả lời:"
 
-        response = await client.chat.completions.create(
+        # KHÔNG dùng await ở đây vì g4f là đồng bộ
+        response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
         )
@@ -114,6 +115,7 @@ async def generate_response_async(question, pdf_text, file_dict):
     except Exception as e:
         return f"❌ Đã xảy ra lỗi khi tạo phản hồi: {str(e)}"
 
+
 # API hỏi đáp
 @app.route("/ask", methods=["POST"])
 def ask():
@@ -122,12 +124,13 @@ def ask():
     if not question:
         return jsonify({"error": "Bạn chưa gửi câu hỏi."}), 400
 
-    # Gọi hàm async một cách an toàn
     try:
-        answer = asyncio.run(generate_response_async(question, pdf_text, file_dict))
+        # GỌI trực tiếp hàm sync
+        answer = generate_response(question, pdf_text, file_dict)
         return jsonify({"answer": answer})
     except Exception as e:
         return jsonify({"error": f"❌ Đã xảy ra lỗi: {str(e)}"}), 500
+
 
 # Giao diện chính
 @app.route("/")
