@@ -104,9 +104,8 @@ def generate_response(question, pdf_text, file_dict):
         file_response = answer_with_related_files(question, file_dict)
         if file_response:
             html_links = "".join(
-                [f'<li><a href="{f["url"]}" target="_blank">📘 <strong>{f["name"]}</strong></a></li>' for f in file_response]
+                [f'<li>📘 <a href="{f["url"]}" target="_blank"><strong>{f["name"]}</strong></a></li>' for f in file_response]
             )
-
             related_links_html = f'<br><br>📎 <strong>Dưới đây là tài liệu liên quan bạn có thể tham khảo:</strong><ul>{html_links}</ul>'
             answer += related_links_html
 
