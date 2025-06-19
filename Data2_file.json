@@ -2,33 +2,33 @@
   "bài giảng": [
     {
       "name": "Máy tính là gì?",
-      "path": "https://joynest.helioho.st/templates/LyThuyet.php?id_class=1&lecture_name=M%C3%A1y%20t%C3%ADnh%20l%C3%A0%20g%C3%AC%3F&id_lecture=1"
+      "path": "../templates/LyThuyet.php?id_class=1&lecture_name=M%C3%A1y%20t%C3%ADnh%20l%C3%A0%20g%C3%AC%3F&id_lecture=1"
     },
     {
       "name": "Sử dụng chuột máy tính",
-      "path": "https://joynest.helioho.st/templates/LyThuyet.php?id_class=1&lecture_name=S%E1%BB%AD%20d%E1%BB%A5ng%20chu%E1%BB%99t%20m%C3%A1y%20t%C3%ADnh&id_lecture=3"
+      "path": "http://joynest.helioho.st/templates/LyThuyet.php?id_class=1&lecture_name=S%E1%BB%AD%20d%E1%BB%A5ng%20chu%E1%BB%99t%20m%C3%A1y%20t%C3%ADnh&id_lecture=3"
     },
     {
       "name": "An toàn khi sử dụng máy tính",
-      "path": "https://joynest.helioho.st/templates/LyThuyet.php?id_class=1&lecture_name=An%20to%C3%A0n%20thi%E1%BA%BFt%20b%E1%BB%8B%20khi%20s%E1%BB%AD%20d%E1%BB%A5ng%20m%C3%A1y%20t%C3%ADnh&id_lecture=4"
+      "path": "http://joynest.helioho.st/templates/LyThuyet.php?id_class=1&lecture_name=An%20to%C3%A0n%20thi%E1%BA%BFt%20b%E1%BB%8B%20khi%20s%E1%BB%AD%20d%E1%BB%A5ng%20m%C3%A1y%20t%C3%ADnh&id_lecture=4"
     },
     {
       "name": "Phần mềm tô màu",
-      "path": "https://joynest.helioho.st/templates/LyThuyet.php?id_class=1&lecture_name=Ph%E1%BA%A7n%20m%E1%BB%81m%20t%C3%B4%20m%C3%A0u&id_lecture=5"
+      "path": "http://joynest.helioho.st/templates/LyThuyet.php?id_class=1&lecture_name=Ph%E1%BA%A7n%20m%E1%BB%81m%20t%C3%B4%20m%C3%A0u&id_lecture=5"
     }
   ],
   "bài tập": [
     {
       "name": "bài tập về Máy tính là gì?",
-      "path": "https://joynest.helioho.st/templates/view_Exercises.php?id_lecture=1 "
+      "path": "http://joynest.helioho.st/templates/view_Exercises.php?id_lecture=1 "
     },
     {
       "name": "bài tập về Sử dụng chuột máy tính",
-      "path": "https://joynest.helioho.st/templates/view_Exercises.php?id_lecture=1 "
+      "path": "http://joynest.helioho.st/templates/view_Exercises.php?id_lecture=1 "
     },
     {
       "name": "bài tập về An toàn khi sử dụng máy tính",
-      "path": "https://joynest.helioho.st/templates/view_Exercises.php?id_lecture=1 "
+      "path": "http://joynest.helioho.st/templates/view_Exercises.php?id_lecture=1 "
     }
   ]
 }
